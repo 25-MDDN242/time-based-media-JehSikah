@@ -7,3 +7,4 @@
 Update this file as you go along to record your progress.
 
 25/2: testing that updating this works :D
+27/2: sketch crudely updated, started code imitiating someone elses maeda clock. got all numbers blocked out and placements aligned
