@@ -1,48 +1,21 @@
 // Update this function to draw you own maeda clock on a 960x500 canvas
-let circ_rad = 20;
-let circ_space = circ_rad + 5;
-
-
+let circ_rad = 30;
+let circ_space = circ_rad + 10;
 
 
 function draw_clock(obj) {
   // YOUR MAIN CLOCK CODE GOES HERE
   angleMode(DEGREES);
   background(0); //  beige
-  let pad = width/12;
-  let spacer = 50;
+
+  let pad = width/8;
 
   /*
-  push();
-  translate(width/4 - pad, height/2);
-  draw_num(5);
-  pop();
-
-  push();
-  translate(2*width/4 - pad, height/2);
-  draw_num(9);
-  pop();
-
-  push();
-  translate(width/2, height/2);
-  circle(0, -circ_space, circ_rad);
-  circle(0, circ_space, circ_rad);
-  pop();
-
-  push();
-  translate(3*width/4 - pad, height/2);
-  draw_num(7);
-  pop();
-
-  push();
-  translate(width - pad, height/2);
-  draw_num(0);
-  pop();
-  */
+  let spacer = 50;
 
   push();
   translate(width/3 - pad - spacer, height/2);
-  draw_num(7);
+  draw_num(1);
   pop()
 
   push();
@@ -60,18 +33,33 @@ function draw_clock(obj) {
 
   push();
   translate(2*width/3 - pad + spacer, height/2);
-  draw_num(7);
+  draw_num(2);
   pop()
 
   push();
   translate(2*width/3 + pad + spacer, height/2);
-  draw_num(7);
+  draw_num(9);
   pop()
+  */
+
+  push();
+  translate(width/2 - pad, height/2);
+  draw_num(2);
+  pop()
+
+  push();
+  translate(width/2 + pad, height/2);
+  draw_num(8);
+  pop()
+
 
 }
 
 function draw_num(num) {
-  fill(255);
+  //fill(255);
+  noFill();
+  strokeWeight(3);
+  stroke(255);
 
   //for (let i = 3; i > -4; i--) {} height dots
   //for (let i = 2; i > -3; i --) {} width dots
@@ -248,6 +236,13 @@ function draw_num(num) {
       circle(i * circ_space, 3 * circ_space, circ_rad);
     }
 
+  } else {
+    for (let x = 3; x > -4; x--) {
+      for (let i = 2; i > -3; i --) {
+        circle(i * circ_space, x * circ_space, circ_rad);
+      }
+    }
+    
   }
 
 }

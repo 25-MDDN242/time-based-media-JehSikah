@@ -6,5 +6,43 @@
 
 Update this file as you go along to record your progress.
 
-25/2: testing that updating this works :D
-27/2: sketch crudely updated, started code imitiating someone elses maeda clock. got all numbers blocked out and placements aligned
+25/2: Testing that updating this works :D
+
+27/2: Sketch crudely updated, started code imitiating someone elses maeda clock. Got all numbers blocked out and placements aligned.
+
+4/3: https://editor.p5js.org/george.gala/sketches/iRDaD_VNn
+https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D
+
+Playing with conical gradients so as I rotate throughout the day, the sky changes. 
+Stolen code:
+
+function circ_grad(sA, sX, sY, colors){
+  let gradient = drawingContext.createConicGradient(
+    sA, sX, sY
+  );
+  gradient.addColorStop(0, colors[0]);
+  gradient.addColorStop(0.15, colors[1]);
+  gradient.addColorStop(0.5, colors[2]);
+  gradient.addColorStop(0.75, colors[3]);
+  gradient.addColorStop(1, colors[0]);
+
+  drawingContext.strokeStyle = gradient;
+  drawingContext.fillStyle = gradient;
+}
+
+when called:
+push(); //MUST INCLUDE PUSH/POP or else everything after it will be gradient coloured
+  circ_grad(
+    0, width/2, height/2,//Start angle, pX, pY
+    [
+      //could add more or less colours, havent tried to make it responsive yet
+      color(100,100,200),
+      color(255,142,126),
+      color(90,200,200),
+      color(85,63,136)
+    ]
+  );
+  circle(width/2, height/2, 400);
+  pop();
+
+NEXT WEEK: access days of week/months?
