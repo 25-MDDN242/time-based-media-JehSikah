@@ -6,6 +6,8 @@
 
 Update this file as you go along to record your progress.
 
+Pages: https://25-mddn242.github.io/time-based-media-JehSikah/
+
 25/2: Testing that updating this works :D
 
 27/2: Sketch crudely updated, started code imitiating someone elses maeda clock. Got all numbers blocked out and placements aligned.
@@ -48,3 +50,5 @@ push(); //MUST INCLUDE PUSH/POP or else everything after it will be gradient col
 NEXT WEEK: access days of week/months?
 
 5/3: Have added sky colours to the background that will spin as the day progresses. Also added the second ring as an "ocean" with lowered opacity and the third ring as sand.
+
+6/3: Changed sky to lerp since the rest of the scene would be pretty cluttered. Sky objects would npw signify hours passing. Timing of lerp still off? so needs tweaking.
