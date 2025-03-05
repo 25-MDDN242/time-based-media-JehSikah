@@ -2,7 +2,7 @@
  * use p5.js to draw a clock on a 960x500 canvas
  */
 
-let wheel_max = 1000;
+let wheelMax = 1500;
 
 function draw_clock(obj) {
   // draw your own clock here based on the values of obj:
@@ -15,81 +15,114 @@ function draw_clock(obj) {
   //        = 0 if the alarm is currently going off
   //        > 0 --> the number of seconds until alarm should go off
 
-
-
-
-
   //main setup
   background(50);
   angleMode(DEGREES);
   noStroke();
 
-  //let exactSeconds = secs + millis / 1000.0; //smooth transition/no ticking
+  let exactSecs = obj.seconds + (obj.millis / 1000); //smooth transition/no ticking
+  let exactMins = obj.minutes + (exactSecs / 60);
+  let exactHours = obj.hours + (exactMins / 60);
+
+  let secSpin = map(exactSecs, 0, 60, 0, 360);
+  let minSpin = map(exactMins, 0, 60, 0, 360);
+  let hourSpin = map(exactHours, 0, 24, 0, 360);
+
+
+  push();
+  translate(width/2, height);
+  rotate(-hourSpin);
 
   hour_wheel();
+  /* debug stick
+  fill(255);
+  arc(0,0,wheelMax,wheelMax,-90.1,-89.9);
+  */
+  pop();
   
-  rect(0,0, 100)
 
-  //min_wheel();
 
-  //sec_wheel();  
+  push();
+  translate(width/2, height);
+  rotate(-secSpin);
 
+  sec_wheel();  
+  pop();
+
+
+
+
+  push();
+  translate(width/2, height);
+  rotate(-minSpin);
+
+  min_wheel();
+  pop();
 }
 
-function circ_grad(sA, sX, sY, colors){
+function sky_grad(sA, sX, sY, colours){
   let gradient = drawingContext.createConicGradient(
     sA, sX, sY
   );
-  gradient.addColorStop(0, colors[0]);
-  gradient.addColorStop(0.15, colors[1]);
-  gradient.addColorStop(0.5, colors[2]);
-  gradient.addColorStop(0.75, colors[3]);
-  gradient.addColorStop(1, colors[0]);
+  gradient.addColorStop(0, colours[0]);
+  gradient.addColorStop(5/24, colours[0]);
+  gradient.addColorStop(5.5/24., colours[1]);
+  gradient.addColorStop(6/24, colours[2]);
+  gradient.addColorStop(6.5/24., colours[3]);
+  gradient.addColorStop(7/24, colours[4]);
+  gradient.addColorStop(17/24, colours[4]);
+  gradient.addColorStop(17.5/24, colours[5]);
+  gradient.addColorStop(18/24, colours[6]);
+  gradient.addColorStop(18.5/24, colours[7]);
+  gradient.addColorStop(19/24, colours[0]);
+  gradient.addColorStop(1, colours[0]);
+
 
   drawingContext.strokeStyle = gradient;
   drawingContext.fillStyle = gradient;
 }
 
 function hour_wheel() {
-  /*
-  let day = color(90,200,200);
-  let night = color(100,100,200);
-  let mid = lerpColor(day, night, 0.5)
-
-  fill(day);
-  circle(width/2, height, wheel_max);
-
-  fill(night);
-  arc(width/2, height, wheel_max, wheel_max, -90, 90); //night half
-
-  fill(mid);
-  arc(width/2, height, wheel_max, wheel_max, -110, -70); //night half
-  */
+  let night = color(11,20,42);
+  let duskPurp = color(91,77,130);
+  let duskOran = color(200,144,120);
+  let duskYell = color(229,195,137);
+  let day = color(141,201,254);
+  let dawnYell = color(245,180,52);
+  let dawnOran = color(229,129,67);
+  let dawnPurp = color(57,64,126);
  
   push();
-  circ_grad(
-    0, width/2, height/2,//Start angle, pX, pY
+  sky_grad(-HALF_PI, 0, 0,//Start angle, pX, pY
     [
-      color(100,100,200),
-      color(255,142,126),
-      color(90,200,200),
-      color(85,63,136)
+      night,
+      duskPurp,
+      duskOran,
+      duskYell,
+      day,
+      dawnYell,
+      dawnOran,
+      dawnPurp,
     ]
   );
-  circle(width/2, height/2, 400);
+  circle(0, 0, wheelMax);
   pop();
 }
 
 function min_wheel() {
 
-  fill(90,170,200);
-  circle(width/2, height, 2*wheel_max/3);
+  fill(229,129,67);
+  circle(0, -250, 50);
+
+  fill(90,170,200,100);
+  circle(0, 0, wheelMax/2);
 
 }
 
 function sec_wheel() {
+  let sand = color(239,217,149);
 
-  fill(90,150,200);
-  circle(width/2, height, wheel_max/3);
+  fill(sand);
+  circle(0, 0, wheelMax/4);
 
 }

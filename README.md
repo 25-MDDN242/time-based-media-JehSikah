@@ -46,3 +46,5 @@ push(); //MUST INCLUDE PUSH/POP or else everything after it will be gradient col
   pop();
 
 NEXT WEEK: access days of week/months?
+
+5/3: Have added sky colours to the background that will spin as the day progresses. Also added the second ring as an "ocean" with lowered opacity and the third ring as sand.
