@@ -57,3 +57,5 @@ NEXT WEEK: access days of week/months?
 
 10/3: https://editor.p5js.org/SafakOnol/sketches/_GApyXh3B
 Rotating wave shape stolen. Also changed my palette lerp into its own function outside of colouring the background to be used to colour more than just the sky.
+
+8/3: Variablised the waves so that they would rise and fall as well as have harsher waves. Started alarm functionality. Also added moon and sun

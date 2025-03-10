@@ -1,19 +1,9 @@
-/*
- * use p5.js to draw a clock on a 960x500 canvas
- */
-
+//VARIABLES
 let wheelMax = 1500;
-
-//timing vars
-let sunrise = 6;
-let sunset = 18;
-
-//wave vars
-let waveRad = 300;
-let tide = 10;
 
 function draw_clock(obj) {
   /* NOTES
+  use p5.js to draw a clock on a 960x500 canvas
   draw your own clock here based on the values of obj:
      obj.hours goes from 0-23
      obj.minutes goes from 0-59
@@ -23,6 +13,7 @@ function draw_clock(obj) {
          < 0 if no alarm is set
          = 0 if the alarm is currently going off
          > 0 --> the number of seconds until alarm should go off
+         if (alarm === undefined) { no alarm clause }
   Date();
   let dayOfWeek = Date();.split(" ")[0];
   let month = Date();.split(" ")[1];
@@ -34,6 +25,7 @@ function draw_clock(obj) {
   rectMode(CENTER);
   noStroke();
 
+  //colour palettes
   let skyPalette = [/*night*/color(11,20,42), /*duskPurp*/color(91,77,130), /*duskOran*/color(200,144,120), /*duskYell*/color(229,195,137), /*day*/color(141,201,254), /*dawnYell*/color(245,180,52), /*dawnOran*/color(229,129,67),/*dawnPurp*/color(57,64,126)];
 
   //timings
@@ -45,64 +37,72 @@ function draw_clock(obj) {
   let minSpin = map(exactMins, 0, 60, 0, 360);
   let hourSpin = map(exactHours, 0, 24, 0, 360);
 
+  //timing vars
+  let sunrise = 6;
+  let sunset = 18;
+
+  //wave vars
+  let tide;
+  let waveRad;
+  if(exactMins < 30) {
+    tide = map(exactMins, 0, 60, 5, 30);
+    waveRad = map(exactMins, 0, 60, 300, 400);
+  } else {
+    tide = map(exactMins, 0, 60, 30, 5);
+    waveRad = map(exactMins, 0, 60, 400, 300);
+  }
+
 
 
   //main code
-
+  //sky
   push();
-  fillLerp(skyPalette, exactHours);
+  fillLerp(skyPalette, exactHours, sunrise, sunset);
   rect(width/2, height/2, width, height);
   pop();
 
-  //hour items
+  //sun/moon
   push();
   translate(width/2, height);
   rotate(-hourSpin);
 
+  celest();
   pop();
-  
-  
-  //minute items
+
+
+  //ocean floor
   push();
   translate(width/2, height);
   rotate(-minSpin);
-  
-  
+
+  sandFloor();  
   pop();
 
   
-  //second items
+  //wave
   push();
   translate(width/2, height);
   rotate(-secSpin);
-  
-  wave();
-  sec_wheel();  
+
+  fill(90,170,200,100);
+  wave(tide, waveRad);
   pop();
+
+
+
+  //alarm
+  push();
+  translate(width/2, height);
+
+  //boat(waveRad);
+  alarm(obj.seconds_until_alarm, waveRad);
+
+  pop();
+  
 }
 
 
-
-function wave() {
-  let phase = 0;
-
-  angleMode(RADIANS);
-
-  let increment = .01 / 32;
-  beginShape();
-  for (let a = 0; a < TWO_PI; a += increment) {
-    let r1 = waveRad + sin(a * 20 + phase) * tide;
-    let x = r1 * cos(a);
-    let y = r1 * sin(a);
-    curveVertex(x, y);
-  }
-  endShape(CLOSE);
-  phase += 0.05;
-
-  angleMode(DEGREES);
-}
-
-function fillLerp(palette, time) {
+function fillLerp(palette, time, sunrise, sunset) {
   let filler = paletteLerp([
 
     [palette[0], 0],
@@ -129,22 +129,70 @@ function fillLerp(palette, time) {
   fill(filler);
 }
 
+function wave(tide, waveRad) {
+  let phase = 0;
+
+  angleMode(RADIANS);
+
+  let increment = .01 / 32;
+  beginShape();
+  for (let a = 0; a < TWO_PI; a += increment) {
+    let r1 = waveRad + sin(a * 20 + phase) * tide;
+    let x = r1 * cos(a);
+    let y = r1 * sin(a);
+    curveVertex(x, y);
+  }
+  endShape(CLOSE);
+  phase += 0.05;
+
+  angleMode(DEGREES);
+}
+
+
+function celest() {
+  let skyLevel = 7 * height / 8
+
+  fill("yellow");
+  circle(0, skyLevel, 100);
+
+  fill("white");
+  circle(0, -skyLevel, 100);
+}
 
 
 
-function min_wheel() {
 
-  //main wheel
-  fill(90,170,200,100);
-  circle(0, 0, wheelMax/2);
+
+function boat(waterLev) {
+
+  fill(255);
+  rect(0, -waterLev, 200, 100)
 
 }
 
-function sec_wheel() {
+function alarm(alarm, waterLev) {
+
+  let chuga = map(alarm, -30, 0, 0, -90);
+
+  if (alarm < 0 || alarm === undefined) {
+
+  } else if (alarm == 0) {
+    boat(waterLev);
+  } else {
+
+  }
+
+  console.log(alarm);
+
+}
+
+
+
+function sandFloor() {
   let sand = color(239,217,149);
 
   fill(sand);
-  circle(0, 0, wheelMax/4);
+  circle(0, 0, wheelMax/5);
 
 }
 
