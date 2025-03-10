@@ -1,6 +1,6 @@
 // Update this function to draw you own maeda clock on a 960x500 canvas
 let circ_rad = 30;
-let circ_space = circ_rad + 10;
+
 
 
 function draw_clock(obj) {
@@ -8,7 +8,14 @@ function draw_clock(obj) {
   angleMode(DEGREES);
   background(0); //  beige
 
-  let pad = width/8;
+  /////SECONDS
+  display(obj.seconds, 10, "pink");
+
+  /////MINUTES
+  display(obj.minutes, 20, "lavender");
+
+  /////HOURS
+  display(obj.hours, 30, "cyan");
 
   /*
   let spacer = 50;
@@ -42,24 +49,15 @@ function draw_clock(obj) {
   pop()
   */
 
-  push();
-  translate(width/2 - pad, height/2);
-  draw_num(2);
-  pop()
-
-  push();
-  translate(width/2 + pad, height/2);
-  draw_num(8);
-  pop()
-
-
 }
 
-function draw_num(num) {
-  //fill(255);
+function draw_num(num, circ_rad, colour) {
+
+  let circ_space = 40;
+
   noFill();
   strokeWeight(3);
-  stroke(255);
+  stroke(colour);
 
   //for (let i = 3; i > -4; i--) {} height dots
   //for (let i = 2; i > -3; i --) {} width dots
@@ -245,4 +243,36 @@ function draw_num(num) {
     
   }
 
+}
+
+function display(time, size, colour) {
+
+  let pad = width/8;
+
+  let timeA = time.toString().split("");
+  let t = timeA[0];
+  let o = timeA[1];
+
+  if (timeA.length == 1) {
+    push();
+    translate(width/2 - pad, height/2);
+    draw_num(0, size, colour);
+    pop()
+
+    push();
+    translate(width/2 + pad, height/2);
+    draw_num(t, size, colour);
+    pop()
+  } else {
+    push();
+    translate(width/2 - pad, height/2);
+    draw_num(t, size, colour);
+    pop()
+
+    push();
+    translate(width/2 + pad, height/2);
+    draw_num(o, size, colour);
+    pop()
+  }
+  
 }

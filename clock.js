@@ -3,28 +3,40 @@
  */
 
 let wheelMax = 1500;
+
+//timing vars
 let sunrise = 6;
 let sunset = 18;
 
+//wave vars
+let waveRad = 300;
+let tide = 10;
+
 function draw_clock(obj) {
-  // draw your own clock here based on the values of obj:
-  //    obj.hours goes from 0-23
-  //    obj.minutes goes from 0-59
-  //    obj.seconds goes from 0-59
-  //    obj.millis goes from 0-999
-  //    obj.seconds_until_alarm is:
-  //        < 0 if no alarm is set
-  //        = 0 if the alarm is currently going off
-  //        > 0 --> the number of seconds until alarm should go off
-  // Date();
-  // let dayOfWeek = Date();.split(" ")[0];
-  // let month = Date();.split(" ")[1];
-  // let year = Date();.split(" ")[2];
+  /* NOTES
+  draw your own clock here based on the values of obj:
+     obj.hours goes from 0-23
+     obj.minutes goes from 0-59
+     obj.seconds goes from 0-59
+     obj.millis goes from 0-999
+     obj.seconds_until_alarm is:
+         < 0 if no alarm is set
+         = 0 if the alarm is currently going off
+         > 0 --> the number of seconds until alarm should go off
+  Date();
+  let dayOfWeek = Date();.split(" ")[0];
+  let month = Date();.split(" ")[1];
+  let year = Date();.split(" ")[2];
+  */
 
   //main setup
   angleMode(DEGREES);
+  rectMode(CENTER);
   noStroke();
 
+  let skyPalette = [/*night*/color(11,20,42), /*duskPurp*/color(91,77,130), /*duskOran*/color(200,144,120), /*duskYell*/color(229,195,137), /*day*/color(141,201,254), /*dawnYell*/color(245,180,52), /*dawnOran*/color(229,129,67),/*dawnPurp*/color(57,64,126)];
+
+  //timings
   let exactSecs = obj.seconds + (obj.millis / 1000); //smooth transition/no ticking
   let exactMins = obj.minutes + (exactSecs / 60);
   let exactHours = obj.hours + (exactMins / 60);
@@ -34,36 +46,114 @@ function draw_clock(obj) {
   let hourSpin = map(exactHours, 0, 24, 0, 360);
 
 
+
+  //main code
+
+  push();
+  fillLerp(skyPalette, exactHours);
+  rect(width/2, height/2, width, height);
+  pop();
+
   //hour items
   push();
   translate(width/2, height);
   rotate(-hourSpin);
 
-  hour_wheel(exactHours);
-  /* debug stick
-  fill(255);
-  arc(0,0,wheelMax,wheelMax,-90.1,-89.9);
-  */
   pop();
   
-
-  //second items
-  push();
-  translate(width/2, height);
-  rotate(-secSpin);
-
-  sec_wheel();  
-  pop();
-
-
+  
   //minute items
   push();
   translate(width/2, height);
   rotate(-minSpin);
+  
+  
+  pop();
 
-  min_wheel();
+  
+  //second items
+  push();
+  translate(width/2, height);
+  rotate(-secSpin);
+  
+  wave();
+  sec_wheel();  
   pop();
 }
+
+
+
+function wave() {
+  let phase = 0;
+
+  angleMode(RADIANS);
+
+  let increment = .01 / 32;
+  beginShape();
+  for (let a = 0; a < TWO_PI; a += increment) {
+    let r1 = waveRad + sin(a * 20 + phase) * tide;
+    let x = r1 * cos(a);
+    let y = r1 * sin(a);
+    curveVertex(x, y);
+  }
+  endShape(CLOSE);
+  phase += 0.05;
+
+  angleMode(DEGREES);
+}
+
+function fillLerp(palette, time) {
+  let filler = paletteLerp([
+
+    [palette[0], 0],
+    [palette[0], sunrise-2/24],
+
+    [palette[1], sunrise-1/24],
+    [palette[2], sunrise/24],
+    [palette[3], sunrise+1/24],
+
+    [palette[4], sunrise+2/24],
+    [palette[4], sunset-2/24],
+
+    [palette[5], sunset-1/24],
+    [palette[6], sunset/24],
+    [palette[7], sunset+1/24],
+
+    [palette[0], sunset+2/24],
+    [palette[0], 1],
+
+  ], time);
+
+  //console.log(time);
+
+  fill(filler);
+}
+
+
+
+
+function min_wheel() {
+
+  //main wheel
+  fill(90,170,200,100);
+  circle(0, 0, wheelMax/2);
+
+}
+
+function sec_wheel() {
+  let sand = color(239,217,149);
+
+  fill(sand);
+  circle(0, 0, wheelMax/4);
+
+}
+
+
+
+
+////////OLD CODE & TESTS////////
+
+/*
 
 function sky_grad(sA, sX, sY, colours){
   let gradient = drawingContext.createConicGradient(
@@ -87,43 +177,7 @@ function sky_grad(sA, sX, sY, colours){
   drawingContext.fillStyle = gradient;
 }
 
-function hour_wheel(time) {
-  let night = color(11,20,42);
-  let duskPurp = color(91,77,130);
-  let duskOran = color(200,144,120);
-  let duskYell = color(229,195,137);
-  let day = color(141,201,254);
-  let dawnYell = color(245,180,52);
-  let dawnOran = color(229,129,67);
-  let dawnPurp = color(57,64,126);
-
-  let skyPalette = paletteLerp([
-
-    [night, 0],
-    [night, sunrise-2/24],
-
-    [duskPurp, sunrise-1/24],
-    [duskOran, sunrise/24],
-    [duskYell, sunrise+1/24],
-
-    [day, sunrise+2/24],
-    [day, sunset-2/24],
-
-    [dawnYell, sunset-1/24],
-    [dawnOran, sunset/24],
-    [dawnPurp, sunset+1/24],
-
-    [night, sunset+2/24],
-    [night, 1],
-
-  ], time);
-
-  console.log(time);
-
-  background(skyPalette);
-  
-  
-  /*
+function hour_wheel() {
   push();
   sky_grad(-HALF_PI, 0, 0,//Start angle, pX, pY
     [
@@ -139,22 +193,24 @@ function hour_wheel(time) {
   );
   circle(0, 0, wheelMax);
   pop();
-  */
 
+  // debug stick
+  // fill(255);
+  // arc(0,0,wheelMax,wheelMax,-90.1,-89.9);
+  
 }
 
-function min_wheel() {
+let colorArray = [color('#0b6a88'), color('#ec015a'), color('#f89e4f'), color('#2dc5f4'), color('#9253a1')];
+let test = paletteLerp([
+  
+  [colorArray[0], 0],
+  [colorArray[1], 0.25],
+  [colorArray[2], 0.5],
+  [colorArray[3], 0.75],
+  [colorArray[4], 1]    
+  
+], (millis() / 10000 % 1));
+fill(test);
 
-  //main wheel
-  fill(90,170,200,100);
-  circle(0, 0, wheelMax/2);
 
-}
-
-function sec_wheel() {
-  let sand = color(239,217,149);
-
-  fill(sand);
-  circle(0, 0, wheelMax/4);
-
-}
+*/
