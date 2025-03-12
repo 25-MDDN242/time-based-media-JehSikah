@@ -5,8 +5,8 @@ let boat;
 let boatFill;
 
 function preload() {
-  boat = loadImage("/images/boat.png");
-  boatFill = loadImage("/images/boatFill.png");
+  boat = loadImage("images/boat.png");
+  boatFill = loadImage("images/boatFill.png");
 }
 
 
@@ -250,7 +250,9 @@ function alarm(alarm, time, waterLev) {
     //send off
     push();
     //chuga = map(?, ?, ?, 0, -180);
+    chuga = time / 
     //rotate(chuga);
+
     drawBoat(waterLev);
     pop();
 
@@ -269,7 +271,7 @@ function alarm(alarm, time, waterLev) {
 
 
 
-
+///////DELETE BEFORE HAND IN/////////
 
 ////////OLD CODE & TESTS////////
 
