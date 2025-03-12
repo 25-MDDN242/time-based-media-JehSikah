@@ -1,6 +1,16 @@
 //VARIABLES
 let wheelMax = 1500;
 
+let boat;
+let boatFill;
+
+function preload() {
+  boat = loadImage("/images/boat.png");
+  boatFill = loadImage("/images/boatFill.png");
+}
+
+
+
 function draw_clock(obj) {
   /* NOTES
   use p5.js to draw a clock on a 960x500 canvas
@@ -23,6 +33,7 @@ function draw_clock(obj) {
   //main setup
   angleMode(DEGREES);
   rectMode(CENTER);
+  imageMode(CENTER);
   noStroke();
 
   //colour palettes
@@ -44,10 +55,10 @@ function draw_clock(obj) {
   //wave vars
   let tide;
   let waveRad;
-  if(exactMins < 30) {
+  if(exactMins < 30) { //rising tide
     tide = map(exactMins, 0, 60, 5, 30);
     waveRad = map(exactMins, 0, 60, 300, 400);
-  } else {
+  } else { //falling tide
     tide = map(exactMins, 0, 60, 30, 5);
     waveRad = map(exactMins, 0, 60, 400, 300);
   }
@@ -65,17 +76,17 @@ function draw_clock(obj) {
   push();
   translate(width/2, height);
   rotate(-hourSpin);
-
   celest();
   pop();
 
-
-  //ocean floor
+  
+  //alarm
   push();
   translate(width/2, height);
-  rotate(-minSpin);
 
-  sandFloor();  
+
+  drawBoat(waveRad);
+  alarm(obj.seconds_until_alarm, waveRad);
   pop();
 
   
@@ -83,48 +94,72 @@ function draw_clock(obj) {
   push();
   translate(width/2, height);
   rotate(-secSpin);
-
-  fill(90,170,200,100);
+  fill(53, 134, 210, 200);
   wave(tide, waveRad);
   pop();
 
 
-
-  //alarm
+  //ocean floor
   push();
   translate(width/2, height);
+  rotate(-minSpin);
+  
+  fishies();
 
-  //boat(waveRad);
-  alarm(obj.seconds_until_alarm, waveRad);
+  sandFloor();  
+  pop();
 
+
+  //tint?
+  push();
+  blendMode(MULTIPLY);
+  fillLerp(skyPalette, exactHours, sunrise, sunset, 100);
+  rect(width/2, height/2, width, height);
   pop();
   
 }
 
 
-function fillLerp(palette, time, sunrise, sunset) {
+function fillLerp(palette, time, sunrise, sunset, alpha) {
+  //transition from orange to purple was too harsh so intermediate colours made
+  let riseMid = lerpColor(palette[1], palette[2], 0.5);
+  let setMid = lerpColor(palette[6], palette[7], 0.5);
+  
   let filler = paletteLerp([
 
+    //night
     [palette[0], 0],
-    [palette[0], sunrise-2/24],
+    [palette[0], sunrise-4/24],
 
-    [palette[1], sunrise-1/24],
-    [palette[2], sunrise/24],
-    [palette[3], sunrise+1/24],
+    //rise
+    [palette[1], sunrise-2/24], //purp
+    [riseMid, sunrise-1/24], //lerp
+    [palette[2], sunrise+1/24], //oran
+    [palette[3], sunrise+2/24], //yell
 
-    [palette[4], sunrise+2/24],
-    [palette[4], sunset-2/24],
+    //day
+    [palette[4], sunrise+4/24],
+    [palette[4], sunset-4/24],
 
-    [palette[5], sunset-1/24],
-    [palette[6], sunset/24],
-    [palette[7], sunset+1/24],
+    //set
+    [palette[5], sunset-2/24], //yell
+    [palette[6], sunset-1/24], //oran
+    [setMid, sunset+1/24], //lerp
+    [palette[7], sunset+2/24], //purp
 
-    [palette[0], sunset+2/24],
+    //night
+    [palette[0], sunset+4/24],
     [palette[0], 1],
 
   ], time);
 
-  //console.log(time);
+  console.log(time);
+
+  if (alpha === undefined) {
+    filler.setAlpha(255);
+  } else {
+    filler.setAlpha(alpha);
+  }
 
   fill(filler);
 }
@@ -148,6 +183,10 @@ function wave(tide, waveRad) {
   angleMode(DEGREES);
 }
 
+function sandFloor() {
+  fill(239,217,149);
+  circle(0, 0, wheelMax/5);
+}
 
 function celest() {
   let skyLevel = 7 * height / 8
@@ -159,42 +198,44 @@ function celest() {
   circle(0, -skyLevel, 100);
 }
 
+function fishies() {
+  fill("orange");
+  ellipse(0, -200, 20, 10);
+  triangle(5, -200, 15, -205, 15, -195);
+}
 
 
 
+function drawBoat(waterLev) {
+  let size = 600;
 
-function boat(waterLev) {
-
+  push();
   fill(255);
-  rect(0, -waterLev, 200, 100)
+  scale(-1,1);
+  image(boat, 0, -waterLev - size/15, size, size);
+  pop();
 
 }
 
 function alarm(alarm, waterLev) {
 
-  let chuga = map(alarm, -30, 0, 0, -90);
+  //undefined sometimes let chuga = map(alarm, -30, 0, 0, -90);
 
   if (alarm < 0 || alarm === undefined) {
 
   } else if (alarm == 0) {
-    boat(waterLev);
+    drawBoat(waterLev);
   } else {
 
   }
 
-  console.log(alarm);
+  //console.log(alarm);
 
 }
 
 
 
-function sandFloor() {
-  let sand = color(239,217,149);
 
-  fill(sand);
-  circle(0, 0, wheelMax/5);
-
-}
 
 
 
@@ -260,5 +301,8 @@ let test = paletteLerp([
 ], (millis() / 10000 % 1));
 fill(test);
 
+
+  tint(0, 0, 150, 150);
+  image(boatFill, 0, -waterLev - size/15, size, size);
 
 */

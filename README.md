@@ -59,3 +59,5 @@ NEXT WEEK: access days of week/months?
 Rotating wave shape stolen. Also changed my palette lerp into its own function outside of colouring the background to be used to colour more than just the sky.
 
 8/3: Variablised the waves so that they would rise and fall as well as have harsher waves. Started alarm functionality. Also added moon and sun
+
+13/3: Imported my boat that will serve as my alarm. Initially tried using tint() so taht it would copy the shade of the sky, however I ended up adding a tint layer over everything to save time adding it to every individual feature. I also tweaked my palette lerp and added an intermediate since the transition between the oranges and purples was way too harsh. Drew one(1) fish.
