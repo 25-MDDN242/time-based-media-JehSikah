@@ -38,6 +38,9 @@ function draw_clock(obj) {
 
   //colour palettes
   let skyPalette = [/*night*/color(11,20,42), /*duskPurp*/color(91,77,130), /*duskOran*/color(200,144,120), /*duskYell*/color(229,195,137), /*day*/color(141,201,254), /*dawnYell*/color(245,180,52), /*dawnOran*/color(229,129,67),/*dawnPurp*/color(57,64,126)];
+  //water
+  //sand?
+
 
   //timings
   let exactSecs = obj.seconds + (obj.millis / 1000); //smooth transition/no ticking
@@ -55,7 +58,7 @@ function draw_clock(obj) {
   //wave vars
   let tide;
   let waveRad;
-  if(exactMins < 30) { //rising tide
+  if (exactMins < 30) { //rising tide
     tide = map(exactMins, 0, 60, 5, 30);
     waveRad = map(exactMins, 0, 60, 300, 400);
   } else { //falling tide
@@ -85,8 +88,8 @@ function draw_clock(obj) {
   translate(width/2, height);
 
 
-  drawBoat(waveRad);
-  alarm(obj.seconds_until_alarm, waveRad);
+  //drawBoat(waveRad);
+  alarm(obj.seconds_until_alarm, exactSecs, waveRad);
   pop();
 
   
@@ -94,8 +97,11 @@ function draw_clock(obj) {
   push();
   translate(width/2, height);
   rotate(-secSpin);
+
   fill(53, 134, 210, 200);
   wave(tide, waveRad);
+
+  fishies();
   pop();
 
 
@@ -104,7 +110,7 @@ function draw_clock(obj) {
   translate(width/2, height);
   rotate(-minSpin);
   
-  fishies();
+  
 
   sandFloor();  
   pop();
@@ -153,7 +159,7 @@ function fillLerp(palette, time, sunrise, sunset, alpha) {
 
   ], time);
 
-  console.log(time);
+  //console.log(time);
 
   if (alpha === undefined) {
     filler.setAlpha(255);
@@ -199,6 +205,8 @@ function celest() {
 }
 
 function fishies() {
+  //bob up and down?
+
   fill("orange");
   ellipse(0, -200, 20, 10);
   triangle(5, -200, 15, -205, 15, -195);
@@ -217,19 +225,42 @@ function drawBoat(waterLev) {
 
 }
 
-function alarm(alarm, waterLev) {
-
-  //undefined sometimes let chuga = map(alarm, -30, 0, 0, -90);
-
-  if (alarm < 0 || alarm === undefined) {
+function alarm(alarm, time, waterLev) {
+  let chuga;
+  
+  if (alarm === undefined) {
+    //off
+    push();
+    rotate(180);
+    drawBoat(waterLev);
+    pop();
 
   } else if (alarm == 0) {
+    //alarm ringing
     drawBoat(waterLev);
-  } else {
+    
+  } else if (alarm > 0) {
+    //lead up
+    push();
+    chuga = map(alarm, 30, 0, -180, 0);
+    rotate(chuga);
+    drawBoat(waterLev);
+    pop();
+  } else if (alarm == -1) {
+    //send off
+    push();
+    //chuga = map(?, ?, ?, 0, -180);
+    //rotate(chuga);
+    drawBoat(waterLev);
+    pop();
 
   }
+  
 
-  //console.log(alarm);
+
+
+  //https://editor.p5js.org/p5/sketches/Sound:_Load_and_Play_Sound
+  console.log(alarm);
 
 }
 
