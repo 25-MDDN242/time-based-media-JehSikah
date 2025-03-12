@@ -31,6 +31,11 @@ function draw_clock(obj) {
   */
 
   //main setup
+
+  // if alarm is 0 AKA going off 
+  // save seconds value into a verable, same for hour
+  // take the value of the saved moment, make new variable thats 10 sec in future 
+  /// check obj to see if future is now 
   angleMode(DEGREES);
   rectMode(CENTER);
   imageMode(CENTER);
@@ -224,7 +229,8 @@ function drawBoat(waterLev) {
   pop();
 
 }
-
+let now
+let future
 function alarm(alarm, time, waterLev) {
   let chuga;
   
@@ -236,6 +242,8 @@ function alarm(alarm, time, waterLev) {
     pop();
 
   } else if (alarm == 0) {
+     now = time;
+     future = now + 30;
     //alarm ringing
     drawBoat(waterLev);
     
@@ -246,15 +254,17 @@ function alarm(alarm, time, waterLev) {
     rotate(chuga);
     drawBoat(waterLev);
     pop();
+
   } else if (alarm == -1) {
+    
     //send off
     push();
-    //chuga = map(?, ?, ?, 0, -180);
-    chuga = time / 
-    //rotate(chuga);
+    chuga = map(time, now, future, 0, -180);
+    rotate(chuga);
 
     drawBoat(waterLev);
     pop();
+    
 
   }
   
@@ -262,7 +272,6 @@ function alarm(alarm, time, waterLev) {
 
 
   //https://editor.p5js.org/p5/sketches/Sound:_Load_and_Play_Sound
-  console.log(alarm);
 
 }
 

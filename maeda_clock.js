@@ -1,12 +1,10 @@
 // Update this function to draw you own maeda clock on a 960x500 canvas
 let circ_rad = 30;
 
-
-
 function draw_clock(obj) {
   // YOUR MAIN CLOCK CODE GOES HERE
   angleMode(DEGREES);
-  background(0); //  beige
+  background(0); //
 
   /////SECONDS
   display(obj.seconds, 10, "pink");
