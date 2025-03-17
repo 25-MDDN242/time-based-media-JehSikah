@@ -7,84 +7,6 @@ function preload() {
   boat = loadImage("images/boat.png");
 }
 
-function drawBoat(waterLev) {
-  let size = 600;
-
-  push();
-  fill(255);
-  scale(-1,1);
-  image(boat, 0, -waterLev - size/15, size, size);
-  pop();
-
-}
-
-/* let tick = setInterval(ticker, 1000);
-let counter = 0;
-function ticker() {
-  counter++;
-}
- */
-
-function alarm(alarm, time, waterLev) {
-  let chuga;
-  let timer = 30;
-  let A;
-  
- /*  if (alarm === undefined) {
-    //off
-    push();
-    rotate(180);
-    drawBoat(waterLev);
-    pop();
-
-  } else  */
-  
-  if (alarm == 0) {
-    //alarm ringing
-    drawBoat(waterLev);
-    
-  } else if (alarm > 0) {
-    //lead up
-    chuga = map(alarm, 30, 0, -180, 0);
-
-    push();
-    rotate(chuga);
-    drawBoat(waterLev);
-    pop();
-
-  } else if (alarm < 0 || alarm === undefined) {
-    //send off
-
-    A = timer - counter;
-    
-    if(A == 0){
-      clearInterval(tick);
-      //noLoop();
-    }
-
-    chuga = map(A, 30, 0, 0, 180);
-
-    if (chuga == 180) {
-      A =+ timer;
-    } 
-  
-    //chuga = map(time, 0, 60, 0, 180);
-
-    
-
-    
-    push();
-    rotate(chuga);
-    drawBoat(waterLev);
-    pop();
-    
-    //https://editor.p5js.org/sandyyt10/sketches/QWkTAMI-i
-  }
-  
-  console.log(chuga);
-
-  //https://editor.p5js.org/p5/sketches/Sound:_Load_and_Play_Sound
-}
 
 
 
@@ -149,17 +71,20 @@ function draw_clock(obj) {
   }
 
 
+  //shift (0,0)
+  translate(width/2, height);
+
 
   //main code
   //sky
   push();
   fillLerp(skyPalette, exactHours, sunrise, sunset);
-  rect(width/2, height/2, width, height);
+  rect(0, -height/2, width, height);
   pop();
 
+ 
   //sun/moon
   push();
-  translate(width/2, height);
   rotate(-hourSpin);
   celest();
   pop();
@@ -167,9 +92,6 @@ function draw_clock(obj) {
   
   //alarm
   push();
-  translate(width/2, height);
-
-
   //drawBoat(waveRad);
   alarm(obj.seconds_until_alarm, exactSecs, waveRad);
   pop();
@@ -177,7 +99,6 @@ function draw_clock(obj) {
   
   //wave
   push();
-  translate(width/2, height);
   rotate(-secSpin/2);
   fill(53, 134, 210, 200);
   wave(tide, waveRad);
@@ -186,7 +107,6 @@ function draw_clock(obj) {
 
 
   push();
-  translate(width/2, height);
   rotate(-secSpin);
   fishies();
   pop();
@@ -194,10 +114,7 @@ function draw_clock(obj) {
 
   //ocean floor
   push();
-  translate(width/2, height);
   rotate(-minSpin);
-  
-  
 
   sandFloor();  
   pop();
@@ -207,7 +124,7 @@ function draw_clock(obj) {
   push();
   blendMode(MULTIPLY);
   fillLerp(skyPalette, exactHours, sunrise, sunset, 100);
-  rect(width/2, height/2, width, height);
+  rect(0, -height/2, width, height);
   pop();
   
 }
@@ -302,6 +219,107 @@ function fishies() {
 
 
 
+function drawBoat(waterLev) {
+  let size = 600;
+
+  push();
+  fill(255);
+  scale(-1,1);
+  image(boat, 0, -waterLev - size/15, size, size);
+  pop();
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+let tick = setInterval(ticker, 1000);
+let counter = 0;
+function ticker() {
+  counter ++;
+}
+
+let alarmTick = true;
+
+function alarm(alarm, time, waterLev) {
+  let chuga;
+  let timer = 30;
+  let A;
+  
+
+  
+  if (alarm == 0) {
+    //alarm ringing
+    drawBoat(waterLev);
+    counter = 0;
+    
+    if (alarmTick == true) {
+      clearInterval(tick);
+
+      // if counter is 0. 
+      tick = setInterval(ticker, 1000);
+      alarmTick = false;
+    }
+
+  } else if (alarm > 0) {
+    //lead up
+    chuga = map(alarm, 30, 0, -180, 0);
+
+    push();
+    rotate(chuga);
+    drawBoat(waterLev);
+    pop();
+
+  } else if (alarm < 0)  {
+    //send off
+
+    A = timer - counter;
+    
+    if(A <= 0 || A === undefined) {
+      clearInterval(tick);
+      A += timer;
+      alarmTick = true;
+      //noLoop();
+    }
+
+    chuga = map(A, 30, 0, 0, 180);
+
+
+    
+
+    
+    push();
+    rotate(chuga);
+    drawBoat(waterLev);
+    pop();
+    
+    //https://editor.p5js.org/sandyyt10/sketches/QWkTAMI-i
+  } else if (alarm === undefined) {
+    //off
+    push();
+    rotate(180);
+    drawBoat(waterLev);
+    pop();
+
+  } 
+  
+  console.log("alarm: " + alarm +  "  A: " + A + "  chuga: " + chuga + "  counter: " + counter + "  tick: " + tick);
+  loop();
+
+  //https://editor.p5js.org/p5/sketches/Sound:_Load_and_Play_Sound
+}
 
 
 
