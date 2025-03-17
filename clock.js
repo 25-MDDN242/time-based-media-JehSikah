@@ -2,11 +2,88 @@
 let wheelMax = 1500;
 
 let boat;
-let boatFill;
 
 function preload() {
   boat = loadImage("images/boat.png");
-  boatFill = loadImage("images/boatFill.png");
+}
+
+function drawBoat(waterLev) {
+  let size = 600;
+
+  push();
+  fill(255);
+  scale(-1,1);
+  image(boat, 0, -waterLev - size/15, size, size);
+  pop();
+
+}
+
+/* let tick = setInterval(ticker, 1000);
+let counter = 0;
+function ticker() {
+  counter++;
+}
+ */
+
+function alarm(alarm, time, waterLev) {
+  let chuga;
+  let timer = 30;
+  let A;
+  
+ /*  if (alarm === undefined) {
+    //off
+    push();
+    rotate(180);
+    drawBoat(waterLev);
+    pop();
+
+  } else  */
+  
+  if (alarm == 0) {
+    //alarm ringing
+    drawBoat(waterLev);
+    
+  } else if (alarm > 0) {
+    //lead up
+    chuga = map(alarm, 30, 0, -180, 0);
+
+    push();
+    rotate(chuga);
+    drawBoat(waterLev);
+    pop();
+
+  } else if (alarm < 0 || alarm === undefined) {
+    //send off
+
+    A = timer - counter;
+    
+    if(A == 0){
+      clearInterval(tick);
+      //noLoop();
+    }
+
+    chuga = map(A, 30, 0, 0, 180);
+
+    if (chuga == 180) {
+      A =+ timer;
+    } 
+  
+    //chuga = map(time, 0, 60, 0, 180);
+
+    
+
+    
+    push();
+    rotate(chuga);
+    drawBoat(waterLev);
+    pop();
+    
+    //https://editor.p5js.org/sandyyt10/sketches/QWkTAMI-i
+  }
+  
+  console.log(chuga);
+
+  //https://editor.p5js.org/p5/sketches/Sound:_Load_and_Play_Sound
 }
 
 
@@ -101,11 +178,16 @@ function draw_clock(obj) {
   //wave
   push();
   translate(width/2, height);
-  rotate(-secSpin);
-
+  rotate(-secSpin/2);
   fill(53, 134, 210, 200);
   wave(tide, waveRad);
+  pop();
 
+
+
+  push();
+  translate(width/2, height);
+  rotate(-secSpin);
   fishies();
   pop();
 
@@ -219,61 +301,7 @@ function fishies() {
 
 
 
-function drawBoat(waterLev) {
-  let size = 600;
 
-  push();
-  fill(255);
-  scale(-1,1);
-  image(boat, 0, -waterLev - size/15, size, size);
-  pop();
-
-}
-let now
-let future
-function alarm(alarm, time, waterLev) {
-  let chuga;
-  
-  if (alarm === undefined) {
-    //off
-    push();
-    rotate(180);
-    drawBoat(waterLev);
-    pop();
-
-  } else if (alarm == 0) {
-     now = time;
-     future = now + 30;
-    //alarm ringing
-    drawBoat(waterLev);
-    
-  } else if (alarm > 0) {
-    //lead up
-    push();
-    chuga = map(alarm, 30, 0, -180, 0);
-    rotate(chuga);
-    drawBoat(waterLev);
-    pop();
-
-  } else if (alarm == -1) {
-    
-    //send off
-    push();
-    chuga = map(time, now, future, 0, -180);
-    rotate(chuga);
-
-    drawBoat(waterLev);
-    pop();
-    
-
-  }
-  
-
-
-
-  //https://editor.p5js.org/p5/sketches/Sound:_Load_and_Play_Sound
-
-}
 
 
 
