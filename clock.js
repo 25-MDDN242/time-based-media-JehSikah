@@ -16,8 +16,8 @@ function preload() {
   fishBig = loadImage("images/fishBig.png");
   fishMid = loadImage("images/fishMid.png");
   fishSmall = loadImage("images/fishSmall.png");
-  sun = loadImage("images/fishSmall.png");
-  moon = loadImage("images/fishSmall.png");
+  sun = loadImage("images/sun.png");
+  moon = loadImage("images/moon.png");
 }
 
 
@@ -56,8 +56,10 @@ function draw_clock(obj) {
 
   //colour palettes
   let skyPalette = [/*night*/color(11,20,42), /*duskPurp*/color(91,77,130), /*duskOran*/color(200,144,120), /*duskYell*/color(229,195,137), /*day*/color(141,201,254), /*dawnYell*/color(245,180,52), /*dawnOran*/color(229,129,67),/*dawnPurp*/color(57,64,126)];
-  let waterPalette = [/*night*/color(5,14,38), /*duskPurp*/color(42,52,118), /*duskOran*/color(92,97,118), /*duskYell*/color(105,131,124), /*day*/color(65,135,230), /*dawnYell*/color(113,121,47), /*dawnOran*/color(105,86,61),/*dawnPurp*/color(26,43,123)];
-  let sandPalette = [/*night*/color(9,17,31), /*duskPurp*/color(76,65,92), /*duskOran*/color(169,122,92), /*duskYell*/color(192,165,97), /*day*/color(119,170,180), /*dawnYell*/color(206,152,36), /*dawnOran*/color(192,109,47),/*dawnPurp*/color(48,54,96)];
+  //let waterPalette = [/*night*/color(5,14,38), /*duskPurp*/color(42,52,118), /*duskOran*/color(92,97,118), /*duskYell*/color(105,131,124), /*day*/color(65,135,230), /*dawnYell*/color(113,121,47), /*dawnOran*/color(105,86,61),/*dawnPurp*/color(26,43,123)];
+  let waterPalette = [/*night*/color(19,54,95), /*duskPurp*/color(42,52,118), /*duskOran*/color(92,97,118), /*duskYell*/color(105,131,124), /*day*/color(65,135,230), /*dawnYell*/color(103,121,223), /*dawnOran*/color(118,103,223),/*dawnPurp*/color(62,75,150)];
+  //let sandPalette = [/*night*/color(9,17,31), /*duskPurp*/color(76,65,92), /*duskOran*/color(169,122,92), /*duskYell*/color(192,165,97), /*day*/color(119,170,180), /*dawnYell*/color(206,152,36), /*dawnOran*/color(192,109,47),/*dawnPurp*/color(48,54,96)];
+  let sandPalette = [/*night*/color(162,150,127), /*duskPurp*/color(106,92,101), /*duskOran*/color(169,122,92), /*duskYell*/color(192,165,97), /*day*/color(208,183,132), /*dawnYell*/color(208,163,132), /*dawnOran*/color(206,139,134),/*dawnPurp*/color(165,133,123)];
 
 
   //timings
@@ -225,7 +227,7 @@ function wave(tide, waveRad) {
 
 function celest() {
   let skyLevel = 7 * height / 8
-  let size = 100;
+  let size = 130;
 
   image(sun, 0, skyLevel, size, size);
 
@@ -234,7 +236,7 @@ function celest() {
 
 function fishies(waterLev, time) {
   let watMid = (waterLev + 140) / 2;
-  let size = 60;
+  let size = 90;
   let spacer = 30;
 
   let distS = map(time, 0, 60, 20, 10);

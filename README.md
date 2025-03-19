@@ -66,5 +66,7 @@ Rotating wave shape stolen. Also changed my palette lerp into its own function o
 
 19/3: Gave up on boat for now. Started adding in my fish that will count the minutes of the hour.
 
+many assets and thigns and need more no boat :)))))
+
 
 MARKDOWN FORMATTING
