@@ -1,18 +1,23 @@
 //VARIABLES
 let wheelMax = 1500;
-
+let sunrise = 6;
+let sunset = 18;
 
 //image var/load
 let boat;
 let fishBig;
 let fishMid;
 let fishSmall;
+let sun;
+let moon;
 
 function preload() {
   boat = loadImage("images/boat.png");
   fishBig = loadImage("images/fishBig.png");
   fishMid = loadImage("images/fishMid.png");
   fishSmall = loadImage("images/fishSmall.png");
+  sun = loadImage("images/fishSmall.png");
+  moon = loadImage("images/fishSmall.png");
 }
 
 
@@ -43,6 +48,7 @@ function draw_clock(obj) {
   // save seconds value into a verable, same for hour
   // take the value of the saved moment, make new variable thats 10 sec in future 
   /// check obj to see if future is now 
+
   angleMode(DEGREES);
   rectMode(CENTER);
   imageMode(CENTER);
@@ -50,8 +56,8 @@ function draw_clock(obj) {
 
   //colour palettes
   let skyPalette = [/*night*/color(11,20,42), /*duskPurp*/color(91,77,130), /*duskOran*/color(200,144,120), /*duskYell*/color(229,195,137), /*day*/color(141,201,254), /*dawnYell*/color(245,180,52), /*dawnOran*/color(229,129,67),/*dawnPurp*/color(57,64,126)];
-  //water
-  //sand?
+  let waterPalette = [/*night*/color(5,14,38), /*duskPurp*/color(42,52,118), /*duskOran*/color(92,97,118), /*duskYell*/color(105,131,124), /*day*/color(65,135,230), /*dawnYell*/color(113,121,47), /*dawnOran*/color(105,86,61),/*dawnPurp*/color(26,43,123)];
+  let sandPalette = [/*night*/color(9,17,31), /*duskPurp*/color(76,65,92), /*duskOran*/color(169,122,92), /*duskYell*/color(192,165,97), /*day*/color(119,170,180), /*dawnYell*/color(206,152,36), /*dawnOran*/color(192,109,47),/*dawnPurp*/color(48,54,96)];
 
 
   //timings
@@ -63,9 +69,7 @@ function draw_clock(obj) {
   let minSpin = map(exactMins, 0, 60, 0, 360);
   let hourSpin = map(exactHours, 0, 24, 0, 360);
 
-  //timing vars
-  let sunrise = 6;
-  let sunset = 18;
+
 
   //wave vars
   let tide;
@@ -86,7 +90,7 @@ function draw_clock(obj) {
   //main code
   //sky
   push();
-  fillLerp(skyPalette, exactHours, sunrise, sunset);
+  fillLerp(skyPalette, exactHours);
   rect(0, -height/2, width, height);
   pop();
 
@@ -100,46 +104,63 @@ function draw_clock(obj) {
   
   //alarm
   push();
-  //drawBoat(waveRad);
+  drawBoat(waveRad);
   alarm(obj.seconds_until_alarm, exactSecs, waveRad);
   pop();
 
-  
+
+
   //wave
   push();
   rotate(-secSpin/2);
-  fill(53, 134, 210, 200);
+  fillLerp(waterPalette, exactHours, 100);
   wave(tide, waveRad);
   pop();
 
-
-
+  //fishies
   push();
   rotate(-secSpin+180);
   fishies(waveRad, exactMins);
   pop();
+  
+  //wave overlay
+  push();
+  rotate(-secSpin/2);
+  fillLerp(waterPalette, exactHours, 80);
+  wave(tide, waveRad);
+  pop();
+
 
 
   //ocean floor
   push();
   rotate(-minSpin);
 
-  fill(239,217,149);
+  fillLerp(sandPalette, exactHours);
+  //fill(239,217,149);
   wave(1,140);  
   pop();
 
 
-  //tint?
+  //tinting so images fit in
+  //stronger tint at noght to make darker
+  let overlay;
+  if (exactHours < (sunset - sunrise)) { 
+    overlay = map(exactHours, 0, 24, 150, 60);
+  } else { 
+    overlay = map(exactHours, 0, 24, 60, 150);
+  }
+
   push();
   blendMode(MULTIPLY);
-  fillLerp(skyPalette, exactHours, sunrise, sunset, 100);
+  fillLerp(skyPalette, exactHours, overlay);
   rect(0, -height/2, width, height);
   pop();
   
 }
 
 
-function fillLerp(palette, time, sunrise, sunset, alpha) {
+function fillLerp(palette, time, alpha) {
   //transition from orange to purple was too harsh so intermediate colours made
   let riseMid = lerpColor(palette[1], palette[2], 0.5);
   let setMid = lerpColor(palette[6], palette[7], 0.5);
@@ -202,15 +223,13 @@ function wave(tide, waveRad) {
   angleMode(DEGREES);
 }
 
-
 function celest() {
   let skyLevel = 7 * height / 8
+  let size = 100;
 
-  fill("yellow");
-  circle(0, skyLevel, 100);
+  image(sun, 0, skyLevel, size, size);
 
-  fill("white");
-  circle(0, -skyLevel, 100);
+  image(moon, 0, -skyLevel, size, size);
 }
 
 function fishies(waterLev, time) {
