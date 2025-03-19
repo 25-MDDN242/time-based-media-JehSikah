@@ -4,12 +4,7 @@ let sunrise = 6;
 let sunset = 18;
 
 //image var/load
-let boat;
-let fishBig;
-let fishMid;
-let fishSmall;
-let sun;
-let moon;
+let boat, fishMid, fishSmall, sun, moon;
 
 function preload() {
   boat = loadImage("images/boat.png");
@@ -43,12 +38,6 @@ function draw_clock(obj) {
   */
 
   //main setup
-
-  // if alarm is 0 AKA going off 
-  // save seconds value into a verable, same for hour
-  // take the value of the saved moment, make new variable thats 10 sec in future 
-  /// check obj to see if future is now 
-
   angleMode(DEGREES);
   rectMode(CENTER);
   imageMode(CENTER);
@@ -56,26 +45,23 @@ function draw_clock(obj) {
 
   //colour palettes
   let skyPalette = [/*night*/color(11,20,42), /*duskPurp*/color(91,77,130), /*duskOran*/color(200,144,120), /*duskYell*/color(229,195,137), /*day*/color(141,201,254), /*dawnYell*/color(245,180,52), /*dawnOran*/color(229,129,67),/*dawnPurp*/color(57,64,126)];
-  //let waterPalette = [/*night*/color(5,14,38), /*duskPurp*/color(42,52,118), /*duskOran*/color(92,97,118), /*duskYell*/color(105,131,124), /*day*/color(65,135,230), /*dawnYell*/color(113,121,47), /*dawnOran*/color(105,86,61),/*dawnPurp*/color(26,43,123)];
   let waterPalette = [/*night*/color(19,54,95), /*duskPurp*/color(42,52,118), /*duskOran*/color(92,97,118), /*duskYell*/color(105,131,124), /*day*/color(65,135,230), /*dawnYell*/color(103,121,223), /*dawnOran*/color(118,103,223),/*dawnPurp*/color(62,75,150)];
-  //let sandPalette = [/*night*/color(9,17,31), /*duskPurp*/color(76,65,92), /*duskOran*/color(169,122,92), /*duskYell*/color(192,165,97), /*day*/color(119,170,180), /*dawnYell*/color(206,152,36), /*dawnOran*/color(192,109,47),/*dawnPurp*/color(48,54,96)];
   let sandPalette = [/*night*/color(162,150,127), /*duskPurp*/color(106,92,101), /*duskOran*/color(169,122,92), /*duskYell*/color(192,165,97), /*day*/color(208,183,132), /*dawnYell*/color(208,163,132), /*dawnOran*/color(206,139,134),/*dawnPurp*/color(165,133,123)];
 
 
   //timings
-  let exactSecs = obj.seconds + (obj.millis / 1000); //smooth transition/no ticking
+  //smooth transition/no ticking
+  let exactSecs = obj.seconds + (obj.millis / 1000); 
   let exactMins = obj.minutes + (exactSecs / 60);
   let exactHours = obj.hours + (exactMins / 60);
 
+  //smooth spin
   let secSpin = map(exactSecs, 0, 60, 0, 360);
   let minSpin = map(exactMins, 0, 60, 0, 360);
   let hourSpin = map(exactHours, 0, 24, 0, 360);
 
-
-
   //wave vars
-  let tide;
-  let waveRad;
+  let tide, waveRad;
   if (exactMins < 30) { //rising tide
     tide = map(exactMins, 0, 60, 5, 30);
     waveRad = map(exactMins, 0, 60, 300, 400);
@@ -85,30 +71,39 @@ function draw_clock(obj) {
   }
 
 
+
+  //main code
   //shift (0,0)
   translate(width/2, height);
 
-
-  //main code
   //sky
   push();
   fillLerp(skyPalette, exactHours);
   rect(0, -height/2, width, height);
   pop();
 
- 
-  //sun/moon
+  //sun + moon
   push();
   rotate(-hourSpin);
   celest(exactHours);
   pop();
 
+  //sun + moon
+  push();
+  rotate(-hourSpin);
+  cloud();
+  pop();
+
   
+
   //alarm
   push();
   //drawBoat(waveRad);
-  alarm(obj.seconds_until_alarm, exactSecs, waveRad);
+  alarm(obj.seconds_until_alarm, waveRad);
   pop();
+
+
+
 
 
 
@@ -125,26 +120,22 @@ function draw_clock(obj) {
   fishies(waveRad, exactMins);
   pop();
   
-  //wave overlay
+  //wave overlay to tint fishies
   push();
   rotate(-secSpin/2);
   fillLerp(waterPalette, exactHours, 80);
   wave(tide, waveRad);
   pop();
 
-
-
   //ocean floor
   push();
   rotate(-minSpin);
-
   fillLerp(sandPalette, exactHours);
   wave(1,140);  
   pop();
 
-
   //tinting so images fit in
-  //stronger tint at noght to make darker
+  //stronger tint at night to make darker
   let overlay;
   if (exactHours < (sunset - sunrise)) { 
     overlay = map(exactHours, 0, 24, 150, 60);
@@ -205,6 +196,27 @@ function fillLerp(palette, time, alpha) {
   fill(filler);
 }
 
+function celest(time) {
+  let skyLevel = 7 * height / 8
+  let size;
+  if (time < (sunset - sunrise)) { 
+    size = map(time, 0, 24, 100, 200);
+  } else { 
+    size = map(time, 0, 24, 200, 100);
+  }
+
+  image(sun, 0, skyLevel, size, size);
+
+  image(moon, 0, -skyLevel, size, size);
+}
+
+function cloud() {
+
+
+
+
+}
+
 function wave(tide, waveRad) {
   let phase = 0;
 
@@ -222,20 +234,6 @@ function wave(tide, waveRad) {
   phase += 0.05;
 
   angleMode(DEGREES);
-}
-
-function celest(time) {
-  let skyLevel = 7 * height / 8
-  let size;
-  if (time < (sunset - sunrise)) { 
-    size = map(time, 0, 24, 130, 180);
-  } else { 
-    size = map(time, 0, 24, 180, 130);
-  }
-
-  image(sun, 0, skyLevel, size, size);
-
-  image(moon, 0, -skyLevel, size, size);
 }
 
 function fishies(waterLev, time) {
@@ -311,6 +309,47 @@ function drawBoat(waterLev) {
 
 
 
+ let chugaWant = 190;
+
+function alarm(alarm, waterLev) {
+  let chuga = 0; 
+  let done = false;
+
+  if (alarm > 0) {
+    //lead up
+    done = false;
+    chuga = map(alarm, 30, 0, -180, 0);
+  } else if (alarm == 0) {
+    //alarm on
+    // for (let i = 0; i < 180; i++) {
+    //   chuga = i;
+    // }
+    chuga = 0;
+
+  } else if (alarm < 0 || alarm === undefined) {
+    //off
+    //rotate(180);
+    
+   
+    // chuga = lerp(chuga, chugaWant, 0.05);
+    done = true;
+    
+  }
+
+  while (done == true) {
+    //chuga += 0.1;
+    chuga = lerp(chuga, chugaWant, 0.05);
+    if (chuga >= 180) {
+      done = false;
+    }
+  }
+  
+  console.log(chuga);
+  rotate(chuga);
+  drawBoat(waterLev);
+  
+
+}
 
 
 
@@ -322,6 +361,17 @@ function drawBoat(waterLev) {
 
 
 
+
+
+
+
+/*
+
+
+  // if alarm is 0 AKA going off 
+  // save seconds value into a verable, same for hour
+  // take the value of the saved moment, make new variable thats 10 sec in future 
+  /// check obj to see if future is now 
 
 let tick = setInterval(ticker, 1000);
 let counter = 0;
@@ -400,6 +450,7 @@ function alarm(alarm, time, waterLev) {
 }
 
 
+*/
 
 
 
