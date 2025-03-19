@@ -115,8 +115,8 @@ function draw_clock(obj) {
 
 
   push();
-  rotate(-secSpin);
-  fishies(waveRad);
+  rotate(-secSpin+180);
+  fishies(waveRad, exactMins);
   pop();
 
 
@@ -124,7 +124,8 @@ function draw_clock(obj) {
   push();
   rotate(-minSpin);
 
-  sandFloor();  
+  fill(239,217,149);
+  wave(1,140);  
   pop();
 
 
@@ -201,10 +202,6 @@ function wave(tide, waveRad) {
   angleMode(DEGREES);
 }
 
-function sandFloor() {
-  fill(239,217,149);
-  circle(0, 0, wheelMax/5);
-}
 
 function celest() {
   let skyLevel = 7 * height / 8
@@ -216,22 +213,62 @@ function celest() {
   circle(0, -skyLevel, 100);
 }
 
-function fishies(waterLev) {
-  //bob up and down?
-  let watMid = waterLev - wheelMax/5
-  let small = 200;
+function fishies(waterLev, time) {
+  let watMid = (waterLev + 140) / 2;
+  let size = 60;
+  let spacer = 30;
 
-  fill("orange");
-  ellipse(0, -200, 20, 10);
-  triangle(5, -200, 15, -205, 15, -195);
+  let distS = map(time, 0, 60, 20, 10);
+  let distM = map(time, 0, 60, 25, 15);
 
-
-  image(fishSmall, 0, -watMid , small, small);
-
-
+  let s = int(time % 10);
+  let m = int(time / 10);
+  
 
 
+  //sardines
+  push();
+  rotate(-spacer);
+  if (time > 0) {
+    for (let i = 0; i < s; i += 2) {
+      push();
+      rotate(distS * i);
+      image(fishSmall, 0, -watMid + 30, size, size);
+      pop();
+    }
+    for (let i = 1; i < s; i += 2) {
+      push();
+      rotate(distS * i);
+      image(fishSmall, 0, -watMid + 45, size, size);
+      pop();
+    }
+  }
+  
 
+  //snapper
+  rotate(spacer);
+  if (time >= 10) {
+    for (let i = 0; i < m; i += 2) {
+      push();
+      rotate(distM * i);
+      image(fishMid, 0, -watMid - 30, size, size);
+      pop();
+    }
+    for (let i = 1; i < m; i += 2) {
+      push();
+      rotate(distM * i);
+      image(fishMid, 0, -watMid - 20, size, size);
+      pop();
+    }
+  }
+
+
+  //the other fish
+  rotate(-2*spacer/3);
+  if (int(time) == 30 || int(time) == 0) {
+    image(fishBig, 0, -watMid - 20, size, size);
+  }
+  pop();
 
 }
 
@@ -334,7 +371,7 @@ function alarm(alarm, time, waterLev) {
 
   } 
   
-  console.log("alarm: " + alarm +  "  A: " + A + "  chuga: " + chuga + "  counter: " + counter + "  tick: " + tick);
+  //console.log("alarm: " + alarm +  "  A: " + A + "  chuga: " + chuga + "  counter: " + counter + "  tick: " + tick);
   loop();
 
   //https://editor.p5js.org/p5/sketches/Sound:_Load_and_Play_Sound
@@ -411,5 +448,10 @@ fill(test);
 
   tint(0, 0, 150, 150);
   image(boatFill, 0, -waterLev - size/15, size, size);
+
+simple fish
+  // fill("orange");
+  // ellipse(0, -watMid, 20, 10);
+  // triangle(5, -200, 15, -205, 15, -195);
 
 */

@@ -4,7 +4,7 @@ let circ_rad = 30;
 function draw_clock(obj) {
   // YOUR MAIN CLOCK CODE GOES HERE
   angleMode(DEGREES);
-  background(0); //
+  background(0); 
 
   /////SECONDS
   display(obj.seconds, 10, "pink");
@@ -15,38 +15,6 @@ function draw_clock(obj) {
   /////HOURS
   display(obj.hours, 30, "cyan");
 
-  /*
-  let spacer = 50;
-
-  push();
-  translate(width/3 - pad - spacer, height/2);
-  draw_num(1);
-  pop()
-
-  push();
-  translate(width/3 + pad - spacer, height/2);
-  draw_num(7);
-  pop()
-
-  //mid dots
-  push();
-  translate(width/2, height/2);
-  circle(0, -circ_space, circ_rad);
-  circle(0, circ_space, circ_rad);
-  pop();
-
-
-  push();
-  translate(2*width/3 - pad + spacer, height/2);
-  draw_num(2);
-  pop()
-
-  push();
-  translate(2*width/3 + pad + spacer, height/2);
-  draw_num(9);
-  pop()
-  */
-
 }
 
 function draw_num(num, circ_rad, colour) {
@@ -56,10 +24,6 @@ function draw_num(num, circ_rad, colour) {
   noFill();
   strokeWeight(3);
   stroke(colour);
-
-  //for (let i = 3; i > -4; i--) {} height dots
-  //for (let i = 2; i > -3; i --) {} width dots
-  //circle(circ_space, circ_space, circ_rad);
 
   if (num == 1) {
 
