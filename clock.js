@@ -100,13 +100,13 @@ function draw_clock(obj) {
   //sun/moon
   push();
   rotate(-hourSpin);
-  celest();
+  celest(exactHours);
   pop();
 
   
   //alarm
   push();
-  drawBoat(waveRad);
+  //drawBoat(waveRad);
   alarm(obj.seconds_until_alarm, exactSecs, waveRad);
   pop();
 
@@ -139,7 +139,6 @@ function draw_clock(obj) {
   rotate(-minSpin);
 
   fillLerp(sandPalette, exactHours);
-  //fill(239,217,149);
   wave(1,140);  
   pop();
 
@@ -225,9 +224,14 @@ function wave(tide, waveRad) {
   angleMode(DEGREES);
 }
 
-function celest() {
+function celest(time) {
   let skyLevel = 7 * height / 8
-  let size = 130;
+  let size;
+  if (time < (sunset - sunrise)) { 
+    size = map(time, 0, 24, 130, 180);
+  } else { 
+    size = map(time, 0, 24, 180, 130);
+  }
 
   image(sun, 0, skyLevel, size, size);
 
@@ -292,9 +296,6 @@ function fishies(waterLev, time) {
   pop();
 
 }
-
-
-
 
 function drawBoat(waterLev) {
   let size = 600;
