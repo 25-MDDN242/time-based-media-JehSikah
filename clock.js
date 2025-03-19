@@ -1,10 +1,18 @@
 //VARIABLES
 let wheelMax = 1500;
 
+
+//image var/load
 let boat;
+let fishBig;
+let fishMid;
+let fishSmall;
 
 function preload() {
   boat = loadImage("images/boat.png");
+  fishBig = loadImage("images/fishBig.png");
+  fishMid = loadImage("images/fishMid.png");
+  fishSmall = loadImage("images/fishSmall.png");
 }
 
 
@@ -108,7 +116,7 @@ function draw_clock(obj) {
 
   push();
   rotate(-secSpin);
-  fishies();
+  fishies(waveRad);
   pop();
 
 
@@ -208,12 +216,23 @@ function celest() {
   circle(0, -skyLevel, 100);
 }
 
-function fishies() {
+function fishies(waterLev) {
   //bob up and down?
+  let watMid = waterLev - wheelMax/5
+  let small = 200;
 
   fill("orange");
   ellipse(0, -200, 20, 10);
   triangle(5, -200, 15, -205, 15, -195);
+
+
+  image(fishSmall, 0, -watMid , small, small);
+
+
+
+
+
+
 }
 
 
