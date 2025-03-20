@@ -3,13 +3,14 @@ let wheelMax = 1500;
 let sunrise = 6;
 let sunset = 18;
 
+
 //alarm vars
 let chuga = 0;
 let spin = false;
 let start, chugPlus, replay;
 
 //image var/load
-let boat, fishMid, fishSmall, sun, moon;
+let boat, fishBig, fishMid, fishSmall, sun, moon, cloudBig, cloudMid, cloudSmall;
 
 //mp3 var/load
 let honk;
@@ -21,8 +22,11 @@ function preload() {
   fishSmall = loadImage("assets/fishSmall.png");
   sun = loadImage("assets/sun.png");
   moon = loadImage("assets/moon.png");
+  cloudBig = loadImage("assets/cloudBig.png");
+  cloudMid = loadImage("assets/cloudMid.png");
+  cloudSmall = loadImage("assets/cloudSmall.png");
   
-  soundFormats('mp3', 'ogg');
+  soundFormats('mp3');
   honk = loadSound("assets/spongebob-alarm-horn.mp3");
 }
 
@@ -56,8 +60,6 @@ function draw_clock(obj) {
   let waterPalette = [/*night*/color(19,54,95), /*duskPurp*/color(42,52,118), /*duskOran*/color(92,97,118), /*duskYell*/color(105,131,124), /*day*/color(65,135,230), /*dawnYell*/color(103,121,223), /*dawnOran*/color(118,103,223),/*dawnPurp*/color(62,75,150)];
   let sandPalette = [/*night*/color(162,150,127), /*duskPurp*/color(106,92,101), /*duskOran*/color(169,122,92), /*duskYell*/color(192,165,97), /*day*/color(208,183,132), /*dawnYell*/color(208,163,132), /*dawnOran*/color(206,139,134),/*dawnPurp*/color(165,133,123)];
 
-
-  //timings
   //smooth transition/no ticking
   let exactSecs = obj.seconds + (obj.millis / 1000); 
   let exactMins = obj.minutes + (exactSecs / 60);
@@ -67,6 +69,9 @@ function draw_clock(obj) {
   let secSpin = map(exactSecs, 0, 60, 0, 360);
   let minSpin = map(exactMins, 0, 60, 0, 360);
   let hourSpin = map(exactHours, 0, 24, 0, 360);
+
+  //sky vars
+  let skyLevel = 7 * height / 8
 
   //wave vars
   let tide, waveRad;
@@ -81,7 +86,7 @@ function draw_clock(obj) {
   //main code
   //shift (0,0)
   translate(width/2, height);
-
+  
   //sky
   push();
   fillLerp(skyPalette, exactHours);
@@ -91,24 +96,29 @@ function draw_clock(obj) {
   //sun + moon
   push();
   rotate(-hourSpin);
-  celest(exactHours);
+  celest(exactHours, skyLevel);
   pop();
 
   //clouds
   push();
-  rotate(-hourSpin);
-  cloud();
+  rotate(-hourSpin*2);
+  cloud(skyLevel + 70, cloudBig, 300);
+  pop();
+
+  push();
+  rotate(-minSpin*2);
+  cloud(skyLevel, cloudMid, 250);
+  pop();
+
+  push();
+  rotate(-secSpin);
+  cloud(skyLevel - 60, cloudSmall, 200);
   pop();
 
   //alarm
   push();
   alarm(obj.seconds_until_alarm, waveRad);
   pop();
-
-
-
-
-
 
   //water
   push();
@@ -119,8 +129,8 @@ function draw_clock(obj) {
 
   //fishies
   push();
-  rotate(-secSpin+180);
-  fishies(waveRad, exactMins);
+  rotate(-2*secSpin+180);
+  fishies(exactMins, waveRad);
   pop();
   
   //water overlay to tint fishies
@@ -129,7 +139,6 @@ function draw_clock(obj) {
   fillLerp(waterPalette, exactHours, 80);
   wave(tide, waveRad);
   pop();
-
 
   //ocean floor
   push();
@@ -190,8 +199,6 @@ function fillLerp(palette, time, alpha) {
 
   ], time);
 
-  //console.log(time);
-
   if (alpha === undefined) {
     filler.setAlpha(255);
   } else {
@@ -201,30 +208,31 @@ function fillLerp(palette, time, alpha) {
   fill(filler);
 }
 
-function celest(time) {
-  let skyLevel = 7 * height / 8
+function celest(time, sky) {
   let size;
+
   if (time < (sunset - sunrise)) { 
     size = map(time, 0, 24, 100, 200);
   } else { 
     size = map(time, 0, 24, 200, 100);
   }
 
-  image(sun, 0, skyLevel, size, size);
-
-  image(moon, 0, -skyLevel, size, size);
+  image(sun, 0, sky, size, size);
+  image(moon, 0, -sky, size, size);
 }
 
-function cloud() {
+function cloud(sky, cloud, size) {
+  tint(255,255,255,200);
 
-
-  //fill
-
+  push();
+  image(cloud, 0, -sky, size, size);
+  rotate(180);
+  image(cloud, 0, -sky, size, size);
+  pop();
 }
 
 function wave(tide, waveRad) {
   let phase = 0;
-
   angleMode(RADIANS);
 
   let increment = .01 / 32;
@@ -241,7 +249,7 @@ function wave(tide, waveRad) {
   angleMode(DEGREES);
 }
 
-function fishies(waterLev, time) {
+function fishies(time, waterLev) {
   let watMid = (waterLev + 140) / 2;
   let size = 90;
   let spacer = 30;
@@ -252,8 +260,6 @@ function fishies(waterLev, time) {
   let s = int(time % 10);
   let m = int(time / 10);
   
-
-
   //sardines
   push();
   rotate(-spacer);
@@ -272,7 +278,6 @@ function fishies(waterLev, time) {
     }
   }
   
-
   //snapper
   rotate(spacer);
   if (time >= 10) {
@@ -290,14 +295,12 @@ function fishies(waterLev, time) {
     }
   }
 
-
   //the other fish
   rotate(-2*spacer/3);
   if (int(time) == 30 || int(time) == 0) {
     image(fishBig, 0, -watMid - 20, size, size);
   }
   pop();
-
 }
 
 function drawBoat(waterLev) {
@@ -308,7 +311,6 @@ function drawBoat(waterLev) {
   scale(-1,1);
   image(boat, 0, -waterLev - size/15, size, size);
   pop();
-
 }
 
 function alarm(alarm, waterLev) {
@@ -336,204 +338,6 @@ function alarm(alarm, waterLev) {
       chuga = map(alarm, 30, 0, -180, 0);
     }
   }
-
   rotate(chuga);
   drawBoat(waterLev);
-
 }
-
-
-
-
-
-    
-    // if (chuga < 180) {
-    //   chuga = lerp(chuga, chugaWant, 0.05);
-    // } else {
-    //   chuga = 180;
-    // }
-   
-    // chuga = lerp(chuga, chugaWant, 0.05);
-    // done = true;
-    // loop();
-      // while (done == true) {
-  //   //chuga += 0.1;
-  //   chuga = lerp(chuga, chugaWant, 0.05);
-  //   if (chuga >= 180) {
-  //     done = false;
-  //   }
-  // }
-
-
-// for (let i = 0; i < 180; i += 0.1) {
-//       chuga = i;
-//     }
-
-
-
-
-
-
-/*
-
-
-  // if alarm is 0 AKA going off 
-  // save seconds value into a verable, same for hour
-  // take the value of the saved moment, make new variable thats 10 sec in future 
-  /// check obj to see if future is now 
-
-let tick = setInterval(ticker, 1000);
-let counter = 0;
-function ticker() {
-  counter ++;
-}
-
-let alarmTick = true;
-
-function alarm(alarm, time, waterLev) {
-  let chuga;
-  let timer = 30;
-  let A;
-  
-
-  
-  if (alarm == 0) {
-    //alarm ringing
-    drawBoat(waterLev);
-    counter = 0;
-    
-    if (alarmTick == true) {
-      clearInterval(tick);
-
-      // if counter is 0. 
-      tick = setInterval(ticker, 1000);
-      alarmTick = false;
-    }
-
-  } else if (alarm > 0) {
-    //lead up
-    chuga = map(alarm, 30, 0, -180, 0);
-
-    push();
-    rotate(chuga);
-    drawBoat(waterLev);
-    pop();
-
-  } else if (alarm < 0)  {
-    //send off
-
-    A = timer - counter;
-    
-    if(A <= 0 || A === undefined) {
-      clearInterval(tick);
-      A += timer;
-      alarmTick = true;
-      //noLoop();
-    }
-
-    chuga = map(A, 30, 0, 0, 180);
-
-
-    
-
-    
-    push();
-    rotate(chuga);
-    drawBoat(waterLev);
-    pop();
-    
-    //https://editor.p5js.org/sandyyt10/sketches/QWkTAMI-i
-  } else if (alarm === undefined) {
-    //off
-    push();
-    rotate(180);
-    drawBoat(waterLev);
-    pop();
-
-  } 
-  
-  //console.log("alarm: " + alarm +  "  A: " + A + "  chuga: " + chuga + "  counter: " + counter + "  tick: " + tick);
-  loop();
-
-  //https://editor.p5js.org/p5/sketches/Sound:_Load_and_Play_Sound
-}
-
-
-*/
-
-
-
-
-///////DELETE BEFORE HAND IN/////////
-
-////////OLD CODE & TESTS////////
-
-/*
-
-function sky_grad(sA, sX, sY, colours){
-  let gradient = drawingContext.createConicGradient(
-    sA, sX, sY
-  );
-  gradient.addColorStop(0, colours[0]);
-  gradient.addColorStop(5/24, colours[0]);
-  gradient.addColorStop(5.5/24, colours[1]);
-  gradient.addColorStop(6/24, colours[2]);
-  gradient.addColorStop(6.5/24, colours[3]);
-  gradient.addColorStop(7/24, colours[4]);
-  gradient.addColorStop(17/24, colours[4]);
-  gradient.addColorStop(17.5/24, colours[5]);
-  gradient.addColorStop(18/24, colours[6]);
-  gradient.addColorStop(18.5/24, colours[7]);
-  gradient.addColorStop(19/24, colours[0]);
-  gradient.addColorStop(1, colours[0]);
-
-
-  drawingContext.strokeStyle = gradient;
-  drawingContext.fillStyle = gradient;
-}
-
-function hour_wheel() {
-  push();
-  sky_grad(-HALF_PI, 0, 0,//Start angle, pX, pY
-    [
-      night,
-      duskPurp,
-      duskOran,
-      duskYell,
-      day,
-      dawnYell,
-      dawnOran,
-      dawnPurp,
-    ]
-  );
-  circle(0, 0, wheelMax);
-  pop();
-
-  // debug stick
-  // fill(255);
-  // arc(0,0,wheelMax,wheelMax,-90.1,-89.9);
-  
-}
-
-let colorArray = [color('#0b6a88'), color('#ec015a'), color('#f89e4f'), color('#2dc5f4'), color('#9253a1')];
-let test = paletteLerp([
-  
-  [colorArray[0], 0],
-  [colorArray[1], 0.25],
-  [colorArray[2], 0.5],
-  [colorArray[3], 0.75],
-  [colorArray[4], 1]    
-  
-], (millis() / 10000 % 1));
-fill(test);
-
-
-  tint(0, 0, 150, 150);
-  image(boatFill, 0, -waterLev - size/15, size, size);
-
-simple fish
-  // fill("orange");
-  // ellipse(0, -watMid, 20, 10);
-  // triangle(5, -200, 15, -205, 15, -195);
-
-*/
