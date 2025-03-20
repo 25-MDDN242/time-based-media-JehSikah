@@ -9,7 +9,7 @@ by Jess Merriman
 
 Pages: https://25-mddn242.github.io/time-based-media-JehSikah/
 
-#### MY DESIGN PROCESS
+### MY DESIGN PROCESS
 
 In the beginning of my design process, I drew up several designs on paper before choosing a look I liked and moving into p5js. 
 
@@ -53,7 +53,7 @@ As my deadline approached, I rushed to impliment the functionality of my clouds.
 
 
 
-#### REFERENCES
+### REFERENCES
 **Conical Gradients:**
 https://editor.p5js.org/george.gala/sketches/iRDaD_VNn
 
