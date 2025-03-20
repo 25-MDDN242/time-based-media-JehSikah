@@ -3,20 +3,27 @@ let wheelMax = 1500;
 let sunrise = 6;
 let sunset = 18;
 
+//alarm vars
+let chuga = 0;
+let spin = false;
+let start, chugPlus;
+
 //image var/load
 let boat, fishMid, fishSmall, sun, moon;
 
+//mp3 var/load
+let honk;
+
 function preload() {
-  boat = loadImage("images/boat.png");
-  fishBig = loadImage("images/fishBig.png");
-  fishMid = loadImage("images/fishMid.png");
-  fishSmall = loadImage("images/fishSmall.png");
-  sun = loadImage("images/sun.png");
-  moon = loadImage("images/moon.png");
+  boat = loadImage("assets/boat.png");
+  fishBig = loadImage("assets/fishBig.png");
+  fishMid = loadImage("assets/fishMid.png");
+  fishSmall = loadImage("assets/fishSmall.png");
+  sun = loadImage("assets/sun.png");
+  moon = loadImage("assets/moon.png");
+  
+  honk = loadSound("assets/spongebob-fog-horn.mp3");
 }
-
-
-
 
 function draw_clock(obj) {
   /* NOTES
@@ -70,8 +77,6 @@ function draw_clock(obj) {
     waveRad = map(exactMins, 0, 60, 400, 300);
   }
 
-
-
   //main code
   //shift (0,0)
   translate(width/2, height);
@@ -88,17 +93,14 @@ function draw_clock(obj) {
   celest(exactHours);
   pop();
 
-  //sun + moon
+  //clouds
   push();
   rotate(-hourSpin);
   cloud();
   pop();
 
-  
-
   //alarm
   push();
-  //drawBoat(waveRad);
   alarm(obj.seconds_until_alarm, waveRad);
   pop();
 
@@ -107,7 +109,7 @@ function draw_clock(obj) {
 
 
 
-  //wave
+  //water
   push();
   rotate(-secSpin/2);
   fillLerp(waterPalette, exactHours, 100);
@@ -120,12 +122,13 @@ function draw_clock(obj) {
   fishies(waveRad, exactMins);
   pop();
   
-  //wave overlay to tint fishies
+  //water overlay to tint fishies
   push();
   rotate(-secSpin/2);
   fillLerp(waterPalette, exactHours, 80);
   wave(tide, waveRad);
   pop();
+
 
   //ocean floor
   push();
@@ -150,6 +153,7 @@ function draw_clock(obj) {
   pop();
   
 }
+
 
 
 function fillLerp(palette, time, alpha) {
@@ -213,7 +217,7 @@ function celest(time) {
 function cloud() {
 
 
-
+  //fill
 
 }
 
@@ -306,48 +310,30 @@ function drawBoat(waterLev) {
 
 }
 
-
-
-
- let chugaWant = 190;
-
 function alarm(alarm, waterLev) {
-  let chuga = 0; 
-  let done = false;
-
-  if (alarm > 0) {
-    //lead up
-    done = false;
-    chuga = map(alarm, 30, 0, -180, 0);
-  } else if (alarm == 0) {
-    //alarm on
-    // for (let i = 0; i < 180; i++) {
-    //   chuga = i;
-    // }
-    chuga = 0;
-
-  } else if (alarm < 0 || alarm === undefined) {
-    //off
-    //rotate(180);
-    
-   
-    // chuga = lerp(chuga, chugaWant, 0.05);
-    done = true;
-    
-  }
-
-  while (done == true) {
-    //chuga += 0.1;
-    chuga = lerp(chuga, chugaWant, 0.05);
-    if (chuga >= 180) {
-      done = false;
+  if (alarm < 0 || alarm === undefined) {
+    chuga = 180; //start in off position
+    if (spin) { //drive off after alarm
+      chugPlus = (millis() - start) / 1000;
+      chuga = map(chugPlus, 0, 30, 0, 180);
+  
+      if (chugPlus >= 30) {
+        spin = false;
+      }
+    }
+  } else {
+    start = millis();
+    spin = true;
+    if (alarm == 0) { //alarm on
+      chuga = 0;
+      honk.play();
+    } else if (alarm > 0) { //countdown to alarm
+      chuga = map(alarm, 30, 0, -180, 0);
     }
   }
-  
-  console.log(chuga);
+
   rotate(chuga);
   drawBoat(waterLev);
-  
 
 }
 
@@ -355,10 +341,28 @@ function alarm(alarm, waterLev) {
 
 
 
+    
+    // if (chuga < 180) {
+    //   chuga = lerp(chuga, chugaWant, 0.05);
+    // } else {
+    //   chuga = 180;
+    // }
+   
+    // chuga = lerp(chuga, chugaWant, 0.05);
+    // done = true;
+    // loop();
+      // while (done == true) {
+  //   //chuga += 0.1;
+  //   chuga = lerp(chuga, chugaWant, 0.05);
+  //   if (chuga >= 180) {
+  //     done = false;
+  //   }
+  // }
 
 
-
-
+// for (let i = 0; i < 180; i += 0.1) {
+//       chuga = i;
+//     }
 
 
 

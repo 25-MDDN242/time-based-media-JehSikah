@@ -68,6 +68,11 @@ Rotating wave shape stolen. Also changed my palette lerp into its own function o
 
 many assets and thigns and need more no boat :)))))
 
+https://editor.p5js.org/ag3439/sketches/S1fu-umj7 
+got the boat working
+
+
+https://www.myinstants.com/en/instant/spongebob-fog-horn-62093/
 
 TELL PHOEBE IT HAS SOUND
 UPDATE PREVIEW.JPG
