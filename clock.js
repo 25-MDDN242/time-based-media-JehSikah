@@ -6,7 +6,7 @@ let sunset = 18;
 //alarm vars
 let chuga = 0;
 let spin = false;
-let start, chugPlus;
+let start, chugPlus, replay;
 
 //image var/load
 let boat, fishMid, fishSmall, sun, moon;
@@ -23,7 +23,7 @@ function preload() {
   moon = loadImage("assets/moon.png");
   
   soundFormats('mp3', 'ogg');
-  honk = loadSound("assets/spongebob-fog-horn.mp3");
+  honk = loadSound("assets/spongebob-alarm-horn.mp3");
 }
 
 function draw_clock(obj) {
@@ -85,7 +85,7 @@ function draw_clock(obj) {
   //sky
   push();
   fillLerp(skyPalette, exactHours);
-  rect(0, -height/2, width, height);
+  rect(0, -height/2, width*2, height*2);
   pop();
 
   //sun + moon
@@ -150,7 +150,7 @@ function draw_clock(obj) {
   push();
   blendMode(MULTIPLY);
   fillLerp(skyPalette, exactHours, overlay);
-  rect(0, -height/2, width, height);
+  rect(0, -height/2, width*2, height*2);
   pop();
   
 }
@@ -314,6 +314,7 @@ function drawBoat(waterLev) {
 function alarm(alarm, waterLev) {
   if (alarm < 0 || alarm === undefined) {
     chuga = 180; //start in off position
+    replay = true;
     if (spin) { //drive off after alarm
       chugPlus = (millis() - start) / 1000;
       chuga = map(chugPlus, 0, 30, 0, 180);
@@ -327,7 +328,10 @@ function alarm(alarm, waterLev) {
     spin = true;
     if (alarm == 0) { //alarm on
       chuga = 0;
-      honk.play();
+      if (honk.isPlaying() == false) {
+        honk.play();
+        replay = false;
+      }
     } else if (alarm > 0) { //countdown to alarm
       chuga = map(alarm, 30, 0, -180, 0);
     }
