@@ -41,6 +41,7 @@ In total, I created:
 - 3 different cloud shapes
 - 1 sun
 - 1 moon
+
 Unfortunately, I had run out of time to do my ocean floor decorations.
 
 After each group of asset, I added them into their respective places and made each correspond to some time variable. 
@@ -54,17 +55,20 @@ As my deadline approached, I rushed to impliment the functionality of my clouds.
 
 #### REFERENCES
 **Conical Gradients:**
-(https://editor.p5js.org/george.gala/sketches/iRDaD_VNn
-)
+https://editor.p5js.org/george.gala/sketches/iRDaD_VNn
+
+
 **Wave Shape:**
-(https://editor.p5js.org/SafakOnol/sketches/_GApyXh3B 
-)
+https://editor.p5js.org/SafakOnol/sketches/_GApyXh3B 
+
+
 **Boat Takeoff Help:**
-(https://editor.p5js.org/ag3439/sketches/S1fu-umj7 
-)
+https://editor.p5js.org/ag3439/sketches/S1fu-umj7 
+
+
 **Sound Issues Help:**
-(https://stackoverflow.com/questions/57064681/referenceerror-soundformats-is-not-defined
-)
+https://stackoverflow.com/questions/57064681/referenceerror-soundformats-is-not-defined
+
+
 **Alarm Mp3:**
-(https://www.zedge.net/ringtones/06ade776-ce5d-34bb-9721-a58a26a4cc3c
-)
+https://www.zedge.net/ringtones/06ade776-ce5d-34bb-9721-a58a26a4cc3c
