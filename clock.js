@@ -22,6 +22,7 @@ function preload() {
   sun = loadImage("assets/sun.png");
   moon = loadImage("assets/moon.png");
   
+  soundFormats('mp3', 'ogg');
   honk = loadSound("assets/spongebob-fog-horn.mp3");
 }
 
